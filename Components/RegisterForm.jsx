@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 
 export default function RegisterForm() {
@@ -10,17 +11,35 @@ const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
 const [error, setError] = useState("");
 
+const router = useRouter();
+
 const handleSubmit = async (e)=>{
     e.preventDefault();
 
     if(!name || !email || !password){
         setError("All fields are necessary");
+        return;
     }
     try {
+        const resUserExist = await fetch('api/userExists',{
+            method: "POST",
+            headers :{
+                "Contecnt-Type" : "application/json"
+            },
+            body: JSON.stringify({ email }),
+        });
+
+        const { user } =await resUserExist.json();
+
+        if(user){
+            setError("User Already registered");
+            return;
+        }
+
         const res = await fetch('api/register',{
             method:"POST",
             headers : {
-                "content-type":"application/json"
+                "Content-Type":"application/json"
             },
             body:JSON.stringify({
                 name,
@@ -31,16 +50,15 @@ const handleSubmit = async (e)=>{
         if(res.ok){
             const form = e.target;
             form.reset();
+            router.push("/");
         }
         else{
             console.log("User registeration failed");
         }
     } catch (error) {
-        console.log("Error during resignation",error);
+        console.log("Error during registeration",error);
     }
 }
-
-
 
     return(
         <div className="grid place-items-center h-screen">
@@ -54,7 +72,7 @@ const handleSubmit = async (e)=>{
                     type="text" placeholder="Email"name="" id="" className="rounded-md"/>
                     <input onChange={(e)=>setPassword(e.target.value)}
                     type="password"  placeholder="password" className="rounded-md"/>
-                    <button className="bg-green-700 text-white font-bold cursor-pointer px-6 py-2 rounded-lg">
+                    <button className="bg-green-400 text-white font-bold cursor-pointer px-6 py-2 rounded-lg">
                         Register
                     </button>
                     {error && (

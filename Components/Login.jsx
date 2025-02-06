@@ -7,7 +7,7 @@ export default function LoginForm(){
                 <form className="flex flex-col gap-3">
                     <input type="text" placeholder="Email"name="" id="" className="rounded-md"/>
                     <input type="password"  placeholder="password" className="rounded-md"/>
-                    <button className="bg-green-700 text-white font-bold cursor-pointer px-6 py-2 rounded-lg">
+                    <button className="bg-green-400 text-white font-bold cursor-pointer px-6 py-2 rounded-lg">
                         Login
                     </button>
                     <button className="bg-red-600 text-white rounded-md py-1 px-2 w-fit text-sm">
